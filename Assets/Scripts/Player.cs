@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private CharacterController _controller;
-    private Vector3 playerVelocity;
+    public Vector3 playerVelocity;
     private bool groundedPlayer;
     [SerializeField] private float playerSpeed;
     [SerializeField] private float jumpHeight;
@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     private bool _hangingFromLedge;
     public Vector3 _climbUpPosition;
     public GameObject _climbUpHitBox;
+
+    public float rolingForce;
+    public bool isRolling;
 
     //Snap the model position 
     private Transform _model;
@@ -36,8 +39,15 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (isRolling == false)
+        {
+            Movement();
+        }
+        if (isRolling == true)
+        {
 
-        Movement();
+        }
+        
 
         if (_controller.enabled == true)
         {
@@ -54,6 +64,7 @@ public class Player : MonoBehaviour
         _animator.SetFloat("Speed", Mathf.Pow(animatorSpeed, 2));
 
         _animator.SetBool("Grounded", groundedPlayer);
+        _animator.SetFloat("FallingSpeed", playerVelocity.y);
         
 
     }
@@ -74,7 +85,7 @@ public class Player : MonoBehaviour
         _controller.Move(move * Time.deltaTime * playerSpeed);
 
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer)
         {
             playerVelocity.y += jumpHeight;
 
@@ -96,6 +107,14 @@ public class Player : MonoBehaviour
         if (_hangingFromLedge == true && Input.GetKeyDown(KeyCode.E))
         {
             _animator.SetTrigger("ClimbUp");
+        }
+
+        //Roll
+
+        if(groundedPlayer && Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _animator.SetTrigger("Roll");
+            
         }
     }
 

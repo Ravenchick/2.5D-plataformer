@@ -24,4 +24,9 @@ public class ClimbUp : StateMachineBehaviour
         
     }
 
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        _player.playerVelocity.y = 0;
+    }
+
 }
