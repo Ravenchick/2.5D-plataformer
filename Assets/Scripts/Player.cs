@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     private Vector3 _modelPosition;
 
     private Animator _animator;
+
+    
+
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
@@ -83,20 +86,25 @@ public class Player : MonoBehaviour
 
         Vector3 move = new Vector3(0, 0, Input.GetAxis("Horizontal"));
 
-        _controller.Move(move * Time.deltaTime * playerSpeed);
+        _controller.Move((move) * Time.deltaTime * playerSpeed);       
 
 
         if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer)
         {
             playerVelocity.y += jumpHeight;
 
+            
             //animator
             _animator.SetTrigger("Jump");
             
         }
 
+              
         playerVelocity.y += gravityValue * Time.deltaTime;
         _controller.Move(playerVelocity * Time.deltaTime);
+        
+
+        
 
         if (move != Vector3.zero && _controller.enabled == true)
         {
