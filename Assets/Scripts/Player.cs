@@ -39,13 +39,14 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (isRolling == false)
+        if (isRolling)
+        {
+            _controller.Move(transform.forward * rolingForce * Time.deltaTime);
+            
+        }
+        else
         {
             Movement();
-        }
-        if (isRolling == true)
-        {
-
         }
         
 
