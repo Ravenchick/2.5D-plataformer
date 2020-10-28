@@ -7,11 +7,11 @@ public class Player : MonoBehaviour
 {
     private CharacterController _controller;
     public Vector3 playerVelocity;
-    private bool groundedPlayer;
+    public bool groundedPlayer;
     [SerializeField] private float playerSpeed;
     [SerializeField] private float jumpHeight;
     [SerializeField] private float gravityValue = -9.81f;
-    private bool _hangingFromLedge;
+    public bool _hangingFromLedge;
     public Vector3 _climbUpPosition;
     public GameObject _climbUpHitBox;
 
@@ -24,6 +24,11 @@ public class Player : MonoBehaviour
 
     private Animator _animator;
 
+
+
+    //Ladder system
+    private ClimbLadder _ladder;
+    public bool _onLadderRange;
     
 
     private void Awake()
@@ -32,6 +37,7 @@ public class Player : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _climbUpHitBox = GameObject.Find("Ledge_Grab_Checker");
         _model = GameObject.Find("Model").GetComponent<Transform>();
+        _ladder = GetComponent<ClimbLadder>();
         
     }
 
@@ -39,6 +45,8 @@ public class Player : MonoBehaviour
     {
         _modelPosition = _model.transform.localPosition;
     }
+
+    
 
     private void Update()
     {
@@ -58,7 +66,23 @@ public class Player : MonoBehaviour
             _model.transform.localPosition = _modelPosition;
         }
 
+        //Block rotation of the model
+
+        _model.transform.rotation = transform.rotation;
+
+        //Climb ladder
+
+        if(Input.GetKeyDown(KeyCode.E) && _onLadderRange == true && _animator.GetCurrentAnimatorStateInfo(0).IsName("Climbing") == false)
+        {            
+            _ladder.enabled = true;
+            
+        }
+
+        _animator.speed = 1;
+
+
         
+
     }
 
     private void LateUpdate()
@@ -86,7 +110,7 @@ public class Player : MonoBehaviour
 
         Vector3 move = new Vector3(0, 0, Input.GetAxis("Horizontal"));
 
-        _controller.Move((move) * Time.deltaTime * playerSpeed);       
+        _controller.Move(move * Time.deltaTime * playerSpeed);       
 
 
         if (Input.GetKeyDown(KeyCode.Space) && groundedPlayer)
@@ -116,6 +140,7 @@ public class Player : MonoBehaviour
         if (_hangingFromLedge == true && Input.GetKeyDown(KeyCode.E))
         {
             _animator.SetTrigger("ClimbUp");
+            _hangingFromLedge = false;
         }
 
         //Roll
@@ -146,4 +171,21 @@ public class Player : MonoBehaviour
         _controller.enabled = true;
     }
 
+    //jump into the ladder
+
+    
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ladder"))
+        {
+            _onLadderRange = false;
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ladder"))
+        {
+            _onLadderRange = true;
+        }
+    }
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - LedgeChecker
   - Collectable
+  - Ladder
+  - GetOutLadder
   layers:
   - Default
   - TransparentFX
